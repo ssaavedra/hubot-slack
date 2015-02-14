@@ -246,7 +246,14 @@ class SlackBot extends Adapter
     channel.setTopic strings.join "\n"
 
   customMessage: (data) =>
-    channel = @client.getChannelGroupOrDMByName data.message.envelope.room
+
+    getChannel = (msg) ->
+      if msg.envelope
+        msg.envelope.room
+      else
+        msg.room
+
+    channel = @client.getChannelGroupOrDMByName data.channel || getChannel data.message
 
     msg = []
     data.attachments = data.content if data.content and not data.attachments
